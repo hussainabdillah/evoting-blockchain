@@ -2,35 +2,25 @@
 pragma solidity ^0.8.28;
 
 contract Voting {
-    address public owner;
-    string[] public candidates;
-    mapping(string => uint256) public votesReceived;
+    mapping(uint256 => uint256) public votesReceived;
     mapping(address => bool) public hasVoted;
 
-    constructor(string[] memory _candidates) {
-        owner = msg.sender;
-        candidates = _candidates;
-    }
+    event Voted(address indexed voter, uint256 indexed candidateId);
 
-    function vote(string memory candidate) public {
-        require(!hasVoted[msg.sender], "You have already voted.");
-        bool validCandidate = false;
-        for (uint256 i = 0; i < candidates.length; i++) {
-            if (keccak256(bytes(candidates[i])) == keccak256(bytes(candidate))) {
-                validCandidate = true;
-                break;
-            }
-        }
-        require(validCandidate, "Candidate not found.");
+    function vote(uint256 candidateId) external {
+        require(!hasVoted[msg.sender], "You have already voted");
+
+        votesReceived[candidateId] += 1;
         hasVoted[msg.sender] = true;
-        votesReceived[candidate]++;
+
+        emit Voted(msg.sender, candidateId);
     }
 
-    function getTotalVotes(string memory candidate) public view returns (uint256) {
-        return votesReceived[candidate];
+    function getVotes(uint256 candidateId) external view returns (uint256) {
+        return votesReceived[candidateId];
     }
 
-    function getAllCandidates() public view returns (string[] memory) {
-        return candidates;
+    function hasAddressVoted(address addr) external view returns (bool) {
+        return hasVoted[addr];
     }
 }

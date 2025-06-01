@@ -23,4 +23,12 @@ contract Voting {
     function hasAddressVoted(address addr) external view returns (bool) {
         return hasVoted[addr];
     }
+
+    function getTotalVotesCast() external view returns (uint256) {
+    uint256 totalVotes = 0;
+    for (uint256 i = 0; i < 100; i++) {
+        totalVotes += votesReceived[i];
+    }
+    return totalVotes;
+    }
 }

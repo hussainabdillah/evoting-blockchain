@@ -8,13 +8,6 @@ async function main() {
 
   // Buat instance kontrak
   const Voting = await hre.ethers.getContractAt("Voting", address);
-
-  // console.log("📊 Hasil Voting:");
-
-  // for (let i = 0; i < 3; i++) {
-  //   const votes = await Voting.getVotes(i);
-  //   console.log(`Kandidat ${i}: ${votes.toString()} suara`);
-  // }
   const events = await Voting.queryFilter("Voted");
   const result = {};
 
